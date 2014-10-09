@@ -1,0 +1,143 @@
+/*************************************************************************
+  ID:panzhiz1
+  PROG:bitree
+  LANG:C++
+  Created Time: 2014/10/9 10:56:56
+ ************************************************************************/
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<cstdlib>
+#include<vector>
+#include<map>
+#include<queue>
+#include<stack>
+#include<fstream>
+using namespace std;
+struct tree{
+	tree *left,*right;
+	char data;
+};
+void createBitree(char *pre,char *in,tree **root,int nLen){
+	//assert(pre!=NULL&&in!=NULL);
+	if(pre==NULL||in==NULL) return ;
+	if(nLen<=0) return;
+	char ch=*pre;
+	tree *node=new tree;
+	node->data=ch;
+	node->left=NULL;
+	node->right=NULL;
+	if(*root==NULL){
+		*root=node;
+	}
+    char *temp_pre=pre;
+	char *temp_in=in;
+	while(*temp_in++!=ch);
+	int k=(int)(temp_in-in-1);
+	createBitree(pre+1,in,&((*root)->left),k);
+	createBitree(pre+k+1,in+k+1,&((*root)->right),nLen-k-1);
+}
+void predisPlay(tree *root){
+	if(root!=NULL){
+		cout<<root->data<<" ";
+	    predisPlay(root->left);
+		predisPlay(root->right);
+	}
+}
+void indisPlay(tree *root){
+
+	if(root!=NULL){
+	    indisPlay(root->left);
+		cout<<root->data<<" ";
+		indisPlay(root->right);
+	}
+}
+void postPlay(tree *root){
+	if(root!=NULL){
+		postPlay(root->left);
+		postPlay(root->right);
+		cout<<root->data<<" ";
+	}
+}
+
+//非递归的实现
+void PredisPlay(tree *root){
+  if(root==NULL) return;
+  stack<tree *> zhan;
+
+  zhan.push(root);
+  while(!zhan.empty()){
+	  tree *temp=zhan.top();
+	  cout<<temp->data<<" ";
+	  zhan.pop();
+	  if(temp->right){
+		  zhan.push(temp->right);
+	  }
+	  if(temp->left){
+		  zhan.push(temp->left);
+	  }
+  }
+}
+
+void IndisPlay(tree *root){
+   if(root==NULL) return;
+   stack<tree *> zhan;
+   tree *curr=root;
+   while(curr!=NULL||!zhan.empty()){
+	   while(curr!=NULL){
+		   zhan.push(curr);
+		   curr=curr->left;
+	   }
+	   if(!zhan.empty()){
+		   curr=zhan.top();
+		   zhan.pop();
+		   cout<<curr->data<<" ";
+	       curr=curr->right;
+	   }
+   }
+
+}
+void PostPlay(tree *root){
+   if(root==NULL) return;
+   stack<tree *> zhan;
+   tree *curr=root;
+   tree *preNode=NULL;
+   while(curr!=NULL||!zhan.empty()){
+      while(curr!=NULL){
+		  zhan.push(curr);
+		  curr=curr->left;
+	  }
+	  curr=zhan.top();
+	  if(curr->right==NULL||curr->right==preNode){
+		  cout<<curr->data<<" ";
+		  zhan.pop();
+		  preNode=curr;
+		  curr=NULL;
+	  }else{
+		  curr=curr->right;
+	  }
+	  }
+}
+ 
+int main(){
+
+ char *pre="ABDECGFI";
+ char *in="DBEAGFCI";
+
+ tree *pRoot=NULL;
+ cout<<strlen(pre)<<endl;
+ createBitree(pre,in,&pRoot,strlen(pre));
+
+ //predisPlay(pRoot);
+ PredisPlay(pRoot);
+ cout<<endl;
+ IndisPlay(pRoot);
+ cout<<endl;
+ PostPlay(pRoot);
+ cout<<endl;
+
+ system("pause");
+ return 0;
+}
+
